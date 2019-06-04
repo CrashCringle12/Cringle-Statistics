@@ -30,6 +30,7 @@ public class StepmaniaStatsReader {
          System.out.println("Stepmania Statistics Reader\n By Lamar Cooley-Russ \n\n\nRoot Element: " + cStats.getDocumentElement().getNodeName());
          System.out.println("----------------------------");
          
+ //********************************************************************************************************************************           
          //This Basically gets every song and puts it into a nList
          NodeList nList = cStats.getElementsByTagName("Song");
          for (int i = 0; i < nList.getLength(); i++) {
@@ -49,6 +50,7 @@ public class StepmaniaStatsReader {
                    System.out.println("There seems to be a problem");
                }
                
+ //********************************************************************************************************************************              
                //Let's get all the steps available for this song
                NodeList steps = theSong.getElementsByTagName("Steps");              
                for (int count = 0; count < steps.getLength(); count++) {
@@ -64,20 +66,45 @@ public class StepmaniaStatsReader {
                      }
                      else {steptype = "Doubles";}
                      System.out.println(steptype + ": " + difficulty);
+                     
+ //********************************************************************************************************************************                       
                     //Let's get all the HighScore stuffs available for this song
-                    NodeList hs = step.getElementsByTagName("HighScoreList");              
-                    NodeList hsNodes = ((Element) hs.item(0)).getElementsByTagName("HighScore");
-                    for (int t = 0; t < hsNodes.getLength(); t++) {
-                        if (hsNodes.item(t).getNodeType() == node1.ELEMENT_NODE) {
-                            Node hsInfo = hsNodes.item(t);
-                            System.out.print(hsInfo.getNodeName() + ": ");
-                            System.out.println(hsInfo.getTextContent());
+                    NodeList hs = step.getElementsByTagName("HighScoreList");  
+                    for (int t = 0; t < hs.getLength(); t++) {
+                        Node node2 = hs.item(t);
+                        if (node2.getNodeType() == node2.ELEMENT_NODE) {
+                            Element hsElement = (Element) node2;
+                            System.out.println(hsElement.getNodeName());
+                            
+ //********************************************************************************************************************************                              
+                            NodeList highScoreList = hsElement.getElementsByTagName("HighScore");              
+                            for (int w = 0; w < highScoreList.getLength(); w++) {
+                                Node node3 = highScoreList.item(w);
+                                //Now Let's label them properly
+                                if (node1.getNodeType() == node3.ELEMENT_NODE) {
+                                    Element highScoreElement = (Element) node3;
+                                    System.out.println("\n" + highScoreElement.getNodeName() + " " + (w+1) );
+
+ //********************************************************************************************************************************                                      
+                                    //Checkpoint: All highscores are in this list called highScoreList. An individual highscore is a node called node3
+                                    NodeList hsList = highScoreElement.getElementsByTagName("*");
+                                    for (int r = 0; r < hsList.getLength(); r++) {
+                                       Node node4 = hsList.item(r);
+                                       if (node4.getNodeType() == node4.ELEMENT_NODE) {
+                                            Element hsElementos = (Element) node4;
+                                            if (hsElementos.getParentNode() == node3) {
+                                                System.out.println(r + hsElementos.getNodeName());
+                                            }
+                                            
+                                       }
+                                   }
+                                   
+                                }
                          }
-                        
-                                
-                    }
+                   }                   
                   }
                }
+            }
             }
             System.out.println("\n");
          }
