@@ -65,13 +65,13 @@ public class StepmaniaStatsReader {
                      else {steptype = "Doubles";}
                      System.out.println(steptype + ": " + difficulty);
                     //Let's get all the HighScore stuffs available for this song
-                    NodeList hs = theSong.getElementsByTagName("HighScoreList");              
-                    NodeList hsNodes = hs.item(0).getChildNodes();
-                    for (int t = 0; t < 3; t++) {
+                    NodeList hs = step.getElementsByTagName("HighScoreList");              
+                    NodeList hsNodes = ((Element) hs.item(0)).getElementsByTagName("HighScore");
+                    for (int t = 0; t < hsNodes.getLength(); t++) {
                         if (hsNodes.item(t).getNodeType() == node1.ELEMENT_NODE) {
-                            Element car = (Element) hsNodes.item(t);
-                            System.out.print(car.getNodeName() + ": ");
-                            System.out.println(car.getTextContent());
+                            Node hsInfo = hsNodes.item(t);
+                            System.out.print(hsInfo.getNodeName() + ": ");
+                            System.out.println(hsInfo.getTextContent());
                          }
                         
                                 
