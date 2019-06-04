@@ -74,7 +74,7 @@ public class StepmaniaStatsReader {
                         Node node2 = hs.item(t);
                         if (node2.getNodeType() == node2.ELEMENT_NODE) {
                             Element hsElement = (Element) node2;
-                            System.out.println(hsElement.getNodeName());
+                            System.out.println("High Scores");
                             
  //********************************************************************************************************************************                              
                             NodeList highScoreList = hsElement.getElementsByTagName("HighScore");              
@@ -93,7 +93,7 @@ public class StepmaniaStatsReader {
                                        if (node4.getNodeType() == node4.ELEMENT_NODE) {
                                             Element hsElementos = (Element) node4;
                                             if (hsElementos.getParentNode() == node3) {
-                                                System.out.println(r + hsElementos.getNodeName());
+                                                System.out.println(hsElementos.getNodeName() +  ": " + hsElementos.getTextContent() );
                                             }
                                             
                                        }
