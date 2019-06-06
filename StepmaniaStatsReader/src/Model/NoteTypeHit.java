@@ -20,16 +20,16 @@ public class NoteTypeHit {
     private int lifts;
     private int fakes;
     
-    public NoteTypeHit(int a, int b, int c, int d, int e, int f, int g, int h, int i) {
-        notes = a;
-        tapsAndHolds = b;
-        jumps = c;
-        holds = d;
-        mines = e;
-        hands = f;
-        rolls = g;
-        lifts = h;
-        fakes = i;
+    public NoteTypeHit(int note, int taph, int jump, int hold, int mine, int hand, int roll, int lift, int fake) {
+        notes = note;
+        tapsAndHolds = taph;
+        jumps = jump;
+        holds = hold;
+        mines = mine;
+        hands = hand;
+        rolls = roll;
+        lifts = lift;
+        fakes = fake;
     }
 
     /**

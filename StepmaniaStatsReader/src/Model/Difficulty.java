@@ -9,14 +9,21 @@ import java.util.ArrayList;
  *
  * @author L627B
  */
-public class PlayerScore extends HighScore {
-        String pack;
-        String song;
-        String steptype;
-        String difficulty;
+public class Difficulty {
+    String steptype;
+    String level;
+    HighScore p1Score;
+    String song;
+    public Difficulty(String lvl, String sttype, HighScore a) {
+        level = lvl;
+        steptype = sttype;
+        p1Score = a;
+    }
+    public String simplify() {
+        return "";
+    }
+    
+
         
-        String grade;
-        String percent;
-        String date;
     
 }

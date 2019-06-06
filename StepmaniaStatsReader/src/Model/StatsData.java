@@ -23,29 +23,32 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class StatsData {
-    Map<String, PlayerScore> searchByName = new HashMap<>();
-    Map<String, PlayerScore> searchSongName = new HashMap<>();
-    Map<String, PlayerScore> searchTier = new HashMap<>();
-    Map<String, PlayerScore> searchPercent = new HashMap<>();
-    Map<Integer, PlayerScore> searchTimesPlayed = new HashMap<>();
-    Map<String, PlayerScore> searchLastPlayed= new HashMap<>();
-    Map<String, PlayerScore> searchDifficulty = new HashMap<>();
-    Map<String, PlayerScore> searchModifiers = new HashMap<>();
-    Map<String, PlayerScore> searchType = new HashMap<>();
-    Map<String, PlayerScore> searchPack= new HashMap<>();
-    ArrayList<Song> songInfo;
-    ArrayList<PlayerScore> players;
-
+    Map<String, ArrayList<Song>> searchByName = new HashMap<>();
+    Map<String, Song> searchSongName = new HashMap<>();
+    Map<String, ArrayList<Song>> searchTier = new HashMap<>();
+    Map<String, ArrayList<Song>> searchPercent = new HashMap<>();
+    Map<Integer,ArrayList<Song>> searchTimesPlayed = new HashMap<>();
+    Map<String, ArrayList<Song>> searchLastPlayed= new HashMap<>();
+    Map<String, ArrayList<Song>> searchDifficulty = new HashMap<>();
+    Map<String, ArrayList<Song>> searchModifiers = new HashMap<>();
+    Map<String, ArrayList<Song>> searchType = new HashMap<>();
+    Map<String, ArrayList<Song>> searchPack= new HashMap<>();
+    ArrayList<Song> songs;
+    ArrayList<Difficulty> players;
+    String pack;
+    String songName;
+    String difficulty;
+    String steptype;
+    int numTimes;
+    String grade;
+    String date;
     public StatsData() {
-        String pack;
-        String songName;
-        String difficulty;
-        String steptype;
-        int numTimes;
-        String grade;
-        String date;
         players = new ArrayList<>();
+        ReadStatisticsFromXML();
 
+
+   }
+    public void ReadStatisticsFromXML() {
         try {
             File stats = new File("src\\Model\\Casual-Stats.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -139,6 +142,6 @@ public class StatsData {
          }
       } catch (IOException | ParserConfigurationException | SAXException e) {
          e.printStackTrace();
-      }
-   }
+      }        
+    }
 }
