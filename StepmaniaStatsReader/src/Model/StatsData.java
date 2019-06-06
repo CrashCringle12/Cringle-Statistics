@@ -32,18 +32,22 @@ public class StatsData {
     Map<String, ArrayList<Song>> searchDifficulty = new HashMap<>();
     Map<String, ArrayList<Song>> searchModifiers = new HashMap<>();
     Map<String, ArrayList<Song>> searchType = new HashMap<>();
-    Map<String, ArrayList<Song>> searchPack= new HashMap<>();
-    ArrayList<Song> songs;
-    ArrayList<Difficulty> players;
-    String pack;
+    Map<String, ArrayList<Song>> Searchpack= new HashMap<>();
+    
+    ArrayList<Song> pack;
+    ArrayList<Difficulty> difficulties;
+    Song song;
+    String packName;
     String songName;
-    String difficulty;
+    Difficulty difficulty;
     String steptype;
+    String level;
     int numTimes;
     String grade;
     String date;
+    HighScore hs;
     public StatsData() {
-        players = new ArrayList<>();
+        difficulties = new ArrayList<>();
         ReadStatisticsFromXML();
 
 
@@ -75,7 +79,7 @@ public class StatsData {
 
                   try {
                   System.out.print(songString[1] + ":   " + songString[2] + "\n");
-                  pack = songString[1];
+                  packName = songString[1];
                   songName = songString[2];
                   }
                   catch (Exception y) {
@@ -90,14 +94,14 @@ public class StatsData {
                      //Now Let's label them properly
                      if (node1.getNodeType() == node1.ELEMENT_NODE) {
                         Element step = (Element) node1;
-                        difficulty = step.getAttribute("Difficulty");
+                        level = step.getAttribute("Difficulty");
                         steptype = step.getAttribute("StepsType");
                         //Let's make the step type prettier
                         if (steptype.equals("dance-single")) {
                             steptype = "Singles";
                         }
                         else {steptype = "Doubles";}
-                        System.out.println(steptype + ": " + difficulty);
+                        //System.out.println(steptype + ": " + level);
 
     //********************************************************************************************************************************                       
                        //Let's get all the HighScore stuffs available for this song
@@ -132,13 +136,17 @@ public class StatsData {
                                    }
 
                                 }
-                         }
-                   }                   
-                  }
-               }
+                            }
+                        }                   
+                    }
+                }
+                difficulties.add(new Difficulty(songName, level, steptype, hs));
+                
             }
             }
             System.out.println("\n");
+            song = new Song(packName, songName, difficulties);
+            pack.add(song);
          }
       } catch (IOException | ParserConfigurationException | SAXException e) {
          e.printStackTrace();
