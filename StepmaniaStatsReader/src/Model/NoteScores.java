@@ -23,7 +23,7 @@ public class NoteScores {
     int letgo;
     int held;
     int missedHold;
-    public NoteScores(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) {
+    public NoteScores(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j) {
         hitMine = a;
         avoidMine = b;
         checkpointMiss = c;
@@ -34,8 +34,5 @@ public class NoteScores {
         w2 = h;
         w1 = i;
         checkpointHit = j;
-        letgo = k;
-        held = l;
-        missedHold = m;
     }
 }

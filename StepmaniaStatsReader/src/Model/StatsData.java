@@ -14,6 +14,7 @@ import java.util.Map;
  * @author L627B
  */
 import java.io.File;
+import static java.lang.Integer.parseInt;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -32,28 +33,41 @@ public class StatsData {
     Map<String, ArrayList<Song>> searchDifficulty = new HashMap<>();
     Map<String, ArrayList<Song>> searchModifiers = new HashMap<>();
     Map<String, ArrayList<Song>> searchType = new HashMap<>();
-    Map<String, ArrayList<Song>> Searchpack= new HashMap<>();
+    Map<String, ArrayList<Song>> searchPack= new HashMap<>();
     
-    ArrayList<Song> pack;
+    ArrayList<Song> pack = new ArrayList<>();
     ArrayList<Difficulty> difficulties;
     Song song;
+   
+    String name;
+    double percent;
+    int score;
+    String grade;
+    RadarValues radar;
+    NoteTypeHit nth;
+    NoteScores Nscores;
+    String prevPackName = "";
+    ArrayList<Integer> arroz = new ArrayList<>();
+    ArrayList<Integer> arroze = new ArrayList<>();
+    ArrayList<Double> arro = new ArrayList<>();
     String packName;
     String songName;
     Difficulty difficulty;
     String steptype;
     String level;
     int numTimes;
-    String grade;
+ 
     String date;
-    HighScore hs;
+    HighScore highscores;
     public StatsData() {
         difficulties = new ArrayList<>();
         ReadStatisticsFromXML();
-
+        
 
    }
     public void ReadStatisticsFromXML() {
         try {
+            
             File stats = new File("src\\Model\\Casual-Stats.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -78,9 +92,9 @@ public class StatsData {
                   String[] songString = directory.split("/");
 
                   try {
-                  System.out.print(songString[1] + ":   " + songString[2] + "\n");
-                  packName = songString[1];
-                  songName = songString[2];
+                    //System.out.print(songString[1] + ":   " + songString[2] + "\n");
+                    packName = songString[1];
+                    songName = songString[2];
                   }
                   catch (Exception y) {
                       System.out.println("There seems to be a problem");
@@ -110,7 +124,7 @@ public class StatsData {
                            Node node2 = hs.item(t);
                            if (node2.getNodeType() == node2.ELEMENT_NODE) {
                                Element hsElement = (Element) node2;
-                               System.out.println("High Scores");
+                               //System.out.println("High Scores");
 
     //********************************************************************************************************************************                              
                                NodeList highScoreList = hsElement.getElementsByTagName("HighScore");              
@@ -119,7 +133,7 @@ public class StatsData {
                                    //Now Let's label them properly
                                    if (node1.getNodeType() == node3.ELEMENT_NODE) {
                                        Element highScoreElement = (Element) node3;
-                                       System.out.println("\n" + highScoreElement.getNodeName() + " " + (w+1) );
+                                      // System.out.println("\n" + highScoreElement.getNodeName() + " " + (w+1) );
 
     //********************************************************************************************************************************                                      
                                        //Checkpoint: All highscores are in this list called highScoreList. An individual highscore is a node called node3
@@ -128,28 +142,88 @@ public class StatsData {
                                           Node node4 = hsList.item(r);
                                             if (node4.getNodeType() == node4.ELEMENT_NODE) {
                                                Element hsElementos = (Element) node4;
-                                            if (hsElementos.getParentNode() == node3) {
-                                                System.out.println(hsElementos.getNodeName() +  ": " + hsElementos.getTextContent() );
-                                            }
+                                                //if (hsElementos.getParentNode() == node3) {
+                                                    String nodeName = hsElementos.getNodeName();
+                                                    String nodeValue = hsElementos.getTextContent();
+                                                    //System.out.println(nodeName +  ": " + hsElementos.getTextContent());
+                                                    switch(nodeName) {
+                                                        case "Name":
+                                                            name = nodeValue;
+                                                            break;
+                                                        case "Grade":
+                                                            grade = nodeValue;
+                                                            break;
+                                                        case "Score":
+                                                            score = Integer.parseInt(nodeValue);
+                                                            break;
+                                                        case "PercentDP":
+                                                            percent = Double.parseDouble(nodeValue);
+                                                            break;
+                                                        case "DateTime":
+                                                            date = nodeValue;
+                                                            break;
+                                                        case "TapNoteScores":
+                                                            NodeList node5List = hsElementos.getChildNodes();
+                                                            
+                                                            for (int b = 0; b < node5List.getLength(); b++ ) {
+                                                                if (node5List.item(b).getNodeType() == node5List.item(b).ELEMENT_NODE) {
+                                                                    //System.out.println(b + ": " +(node5List.item(b)).getTextContent() + "-" + node5List.item(b).getNodeType());
+                                                                    arroz.add(Integer.parseInt((node5List.item(b)).getTextContent()));
+                                                                }
+                                                            }
+                                                            break;
 
+                                                        case "RadarValues":
+                                                            NodeList node6List = hsElementos.getChildNodes();
+                                                            for (int b = 0; b < node6List.getLength(); b++ ) {
+                                                                if (node6List.item(b).getNodeType() == node6List.item(b).ELEMENT_NODE) {
+                                                                    arro.add(Double.parseDouble((node6List.item(b)).getTextContent()));
+                                                                    if (arro.size() > 4) {
+                                                                        arroze.add((int) Double.parseDouble((node6List.item(b)).getTextContent()));
+                                                                    }
+                                                                }
+                                                            }
+                                                            break;
+                                                    }
+                                                    
+
+                                                //}
                                        }
+                                        
                                    }
+                                        nth = new NoteTypeHit(arroze.get(0), arroze.get(1), arroze.get(2), arroze.get(3), arroze.get(4), arroze.get(5), arroze.get(6), arroze.get(7), arroze.get(8));
+                                        radar = new RadarValues(arro.get(0), arro.get(1), arro.get(2), arro.get(3), arro.get(4));
+                                        Nscores = new NoteScores(arroz.get(0), arroz.get(1), arroz.get(2), arroz.get(3), arroz.get(4), arroz.get(5), arroz.get(6), arroz.get(7), arroz.get(8), arroz.get(9));
+                                        highscores = new HighScore(name, grade, score, percent, date, radar, nth, Nscores);
 
                                 }
                             }
                         }                   
                     }
                 }
-                difficulties.add(new Difficulty(songName, level, steptype, hs));
+               difficulties.add(new Difficulty(songName, level, steptype, highscores));
                 
             }
             }
-            System.out.println("\n");
             song = new Song(packName, songName, difficulties);
-            pack.add(song);
+            if (song.getTitle() != "null") {
+                pack.add(song);
+            }
+            if (packName != prevPackName) {
+                searchPack.put(packName, pack);
+            }
+            prevPackName = packName;
          }
+            
       } catch (IOException | ParserConfigurationException | SAXException e) {
          e.printStackTrace();
       }        
+    }
+    public ArrayList<String> viewData() {
+        ArrayList<String> listo = new ArrayList<>();
+        for (Song o : pack) {
+            listo.add(o.toString());
+        }
+        return listo;
     }
 }
