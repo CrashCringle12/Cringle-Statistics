@@ -21,6 +21,18 @@ public class Song {
         difficulties = difs;
     }
 
+    
+    public ArrayList<String> simplify() {
+        ArrayList<String> str = new ArrayList<>();
+        for (Difficulty i : difficulties) {
+            for (String w : i.simplify()) {
+                str.add(pack + "-" + title + ": " +  w);
+            }
+            
+        }
+        return str;
+    }
+
     /**
      * @return the pack
      */

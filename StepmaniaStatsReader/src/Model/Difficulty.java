@@ -12,16 +12,20 @@ import java.util.ArrayList;
 public class Difficulty {
     private String steptype;
     private String level;
-    private HighScore p1Score;
+    private ArrayList<HighScore> pScores;
     private String title;
-    public Difficulty(String tit, String lvl, String sttype, HighScore a) {
+    public Difficulty(String tit, String lvl, String sttype, ArrayList<HighScore> a) {
         level = lvl;
         steptype = sttype;
-        p1Score = a;
+        pScores = a;
         title = tit;
     }
-    public String simplify() {
-        return "";
+    public ArrayList<String> simplify() {
+        ArrayList<String> str = new ArrayList<>();
+        for (HighScore i : pScores) {
+            str.add(i.toString() + "on the " + steptype + " " + level);
+        }
+        return str;
     }
 
     /**
@@ -53,17 +57,17 @@ public class Difficulty {
     }
 
     /**
-     * @return the p1Score
+     * @return the pScores
      */
-    public HighScore getP1Score() {
-        return p1Score;
+    public ArrayList<HighScore> getPScore() {
+        return pScores;
     }
 
     /**
-     * @param p1Score the p1Score to set
+     * @param pScores the pScores to set
      */
-    public void setP1Score(HighScore p1Score) {
-        this.p1Score = p1Score;
+    public void setPScore(ArrayList<HighScore> pScores) {
+        this.pScores = pScores;
     }
 
     /**

@@ -33,7 +33,7 @@ public class HighScore {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public String simplify() {
+    public String toString() {
         return(getName() + "received a(n) " + getGrade() + " with a " + getPercent() + "% and " + getScore() + "pts on " + getDate() + " ");
     }
 
