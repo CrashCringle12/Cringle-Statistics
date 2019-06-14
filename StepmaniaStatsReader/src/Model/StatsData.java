@@ -39,7 +39,7 @@ public class StatsData {
     private ArrayList<Integer> arroze = new ArrayList<>();
     private ArrayList<Double> arro = new ArrayList<>();
 
-    private ArrayList<Song> pack = new ArrayList<>();
+    private ArrayList<Song> AllSongs = new ArrayList<>();
     private ArrayList<Difficulty> difficulties;
     private Song song;
    
@@ -86,7 +86,7 @@ public class StatsData {
          //This Basically gets every song and puts it into a nList
             NodeList nList = cStats.getElementsByTagName("Song");
             for (int i = 0; i < nList.getLength(); i++) {
-                difficulties.clear();
+
                 //Assigns that specific song to an nNode. Apparently nLists are not iterable, which is why I used this method
                 Node nNode = nList.item(i);
                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -97,7 +97,7 @@ public class StatsData {
                   String[] songString = directory.split("/");
 
                   try {
-                    //System.out.print(songString[1] + ":   " + songString[2] + "\n");
+
                         setPackName(songString[1]);
                         setSongName(songString[2]);
                   }
@@ -110,51 +110,59 @@ public class StatsData {
                   NodeList steps = theSong.getElementsByTagName("Steps");
                     
                   for (int count = 0; count < steps.getLength(); count++) {
-                    highscores.clear();
+                      try {
+                      System.out.println("Adding: " + getSongName() + difficulties.get(0).getPScore() + "\nto ArrayList of Difficulties");
+                      }
+                      catch (IndexOutOfBoundsException e) {
+                      	System.out.println("e");
+                      }
                      Node node1 = steps.item(count);
                      //Now Let's label them properly
                      if (node1.getNodeType() == node1.ELEMENT_NODE) {
+                    	 	System.out.println(getDifficulties().size() + " : " + highscores.size());
                             Element step = (Element) node1;
                             setLevel(step.getAttribute("Difficulty"));
                             setSteptype(step.getAttribute("StepsType"));
+                            System.out.println(level);
                             //Let's make the step type prettier
                             if (getSteptype().equals("dance-single")) {
                                     setSteptype("Singles");
                             }
                             else {  setSteptype("Doubles");}
-                            //System.out.println(steptype + ": " + level);
-                            System.out.println(songName + " " + steptype + level + "\n");
+                            //System.out.println(songName + " " + steptype + level + "\n");
     //********************************************************************************************************************************                       
                             //Let's get all the HighScore stuffs available for this song
                             NodeList hs = step.getElementsByTagName("HighScoreList");  
                             for (int t = 0; t < hs.getLength(); t++) {
+                                
                                 Node node2 = hs.item(t);
+
                                 
                                 if (node2.getNodeType() == node2.ELEMENT_NODE) {
                                     Element hsElement = (Element) node2;
-                                    //System.out.println("High Scores");
-
+                                    
     //********************************************************************************************************************************                              
-                                    NodeList highScoreList = hsElement.getElementsByTagName("HighScore");              
+                                    NodeList highScoreList = hsElement.getElementsByTagName("HighScore");
+                                    System.out.println("Beginning a Loop of Each HighScore\n\n");
                                     for (int w = 0; w < highScoreList.getLength(); w++) {
+                                        System.out.println("New HighScore!!!! " + getSongName() + " " + level);
                                         Node node3 = highScoreList.item(w);
                                         //Now Let's label them properly
                                         if (node1.getNodeType() == node3.ELEMENT_NODE) {
                                             Element highScoreElement = (Element) node3;
-                                           // System.out.println("\n" + highScoreElement.getNodeName() + " " + (w+1) );
-
+                                            
     //********************************************************************************************************************************                                      
                                             //Checkpoint: All highscores are in this list called highScoreList. An individual highscore is a node called node3
                                             NodeList hsList = highScoreElement.getElementsByTagName("*");
-                                            
+                                            //Loops through each node that defines a highscore and creates a highscore object.
                                             for (int r = 0; r < hsList.getLength(); r++) {
                                                Node node4 = hsList.item(r);
                                                
                                                if (node4.getNodeType() == node4.ELEMENT_NODE) {
+                                                   
                                                     Element hsElementos = (Element) node4;
                                                     String nodeName = hsElementos.getNodeName();
                                                     String nodeValue = hsElementos.getTextContent();
-                                                    //System.out.println(nodeName +  ": " + hsElementos.getTextContent());
                                                     switch(nodeName) {
                                                         case "Name":
                                                             setName(nodeValue);
@@ -199,31 +207,45 @@ public class StatsData {
                                             setRadar(new RadarValues(getArro().get(0), getArro().get(1), getArro().get(2), getArro().get(3), getArro().get(4)));
                                             setNscores(new NoteScores(getArroz().get(0), getArroz().get(1), getArroz().get(2), getArroz().get(3), getArroz().get(4), getArroz().get(5), getArroz().get(6), getArroz().get(7), getArroz().get(8), getArroz().get(9)));
                                             setHighscore(new HighScore(getName(), getGrade(), getScore(), getPercent(), getDate(), getRadar(), getNth(), getNscores()));
-                                            System.out.println(getHighscore().toString());
-                                            System.out.println("*************************************");
                                             //Just adding that highscore to the list
                                             getHighscores().add(getHighscore());
+                                            System.out.println(getHighscore().toString());
+                                            System.out.println("Adding to highscore list!");
+                                            System.out.println(getDifficulties().size() + " : " + highscores.size());
+                                            
                                         }
-                                   
+
                                 }
-                            }                   
+
+                                    System.out.println(getDifficulties().size() + " : " + highscores.size());
+
+                                    System.out.println("Creating a difficulty " + level + " " + songName + steptype + highscores);
+                                    difficulty = new Difficulty(songName, level, steptype, highscores);
+                                    difficulties.add(difficulty);
+                                    System.out.println(difficulties.size() + " : " + highscores.size());
+
+                                    System.out.println("Clearing HighScores");
+                                    highscores.clear();
+                                    System.out.println(getDifficulties().size() + " : " + highscores.size());
+                            }  
+                                
                         }
+
                     }
-                    difficulty = new Difficulty(getSongName(), getLevel(), getSteptype(), getHighscores());
-                    getDifficulties().add(difficulty);
 
                 }
+                  
             }
-            setSong(new Song(getPackName(), getSongName(), getDifficulties()));
-            for (String g : song.simplify()) {
-                System.out.println(g);
-            }
-                
+           setSong(new Song(getPackName(), getSongName(), getDifficulties()));  
+            getDifficulties().clear();
+            System.out.println("Creating song with ArrayList of Difficulties then Clearing Difficulties\n");
+            
             if (getSong().getTitle() != "null") {
-                getPack().add(getSong());
+                getAllSongs().add(getSong());
+
             }
             if (getPackName() != getPrevPackName()) {
-                getSearchPack().put(getPackName(), getPack());
+                getSearchPack().put(getPackName(), getAllSongs());
             }
             setPrevPackName(getPackName());       
         }   
@@ -234,7 +256,7 @@ public class StatsData {
     }
     public ArrayList<String> simplify() {
         ArrayList<String> str = new ArrayList<>();
-        for (Song n : pack) {
+        for (Song n : getAllSongs()) {
             for (String p : n.simplify()) {
                 str.add(p);
             }
@@ -426,17 +448,17 @@ public class StatsData {
     }
 
     /**
-     * @return the pack
+     * @return the AllSongs
      */
-    public ArrayList<Song> getPack() {
-        return pack;
+    public ArrayList<Song> getAllSongs() {
+        return AllSongs;
     }
 
     /**
-     * @param pack the pack to set
+     * @param AllSongs the AllSongs to set
      */
-    public void setPack(ArrayList<Song> pack) {
-        this.pack = pack;
+    public void setAllSongs(ArrayList<Song> AllSongs) {
+        this.AllSongs = AllSongs;
     }
 
     /**

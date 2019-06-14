@@ -23,7 +23,8 @@ public class Difficulty {
     public ArrayList<String> simplify() {
         ArrayList<String> str = new ArrayList<>();
         for (HighScore i : pScores) {
-            str.add(i.toString() + "on the " + steptype + " " + level);
+            str.add(i.toString() + "on the " + getSteptype() + " " + getLevel());
+            //System.out.print(i.toString() + "on the " + getSteptype() + " " + getLevel());
         }
         return str;
     }

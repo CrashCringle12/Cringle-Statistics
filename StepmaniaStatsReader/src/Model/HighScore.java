@@ -34,7 +34,7 @@ public class HighScore {
     }
     
     public String toString() {
-        return(getName() + "received a(n) " + getGrade() + " with a " + getPercent() + "% and " + getScore() + "pts on " + getDate() + " ");
+        return(getName() + " received a(n) " + getGrade() + " with a " + getPercent() + "% and " + getScore() + "pts on " + getDate() + " ");
     }
 
     /**
