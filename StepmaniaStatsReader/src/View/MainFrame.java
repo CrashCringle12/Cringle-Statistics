@@ -13,7 +13,7 @@ public class MainFrame {
         private JLabel lblHeading;
         
     public MainFrame() {
-        frame = new JFrame("Lamar's Test For Stats");
+        frame = new JFrame("Cringle Statistics Alpha");
         String col[] = {"Pack", "Song", "StepType", "Difficulty", "Name", "Grade", "Percent", "Points", "Date"};
         tableModel = new DefaultTableModel(col, 0);
         table = new JTable(getTableModel());
