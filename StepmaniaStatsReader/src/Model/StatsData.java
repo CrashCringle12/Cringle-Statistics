@@ -38,9 +38,8 @@ public class StatsData {
     private ArrayList<Integer> arroz = new ArrayList<>();
     private ArrayList<Integer> arroze = new ArrayList<>();
     private ArrayList<Double> arro = new ArrayList<>();
-
+    ArrayList<Difficulty> difficulties;
     private ArrayList<Song> AllSongs = new ArrayList<>();
-    private ArrayList<Difficulty> difficulties;
     private Song song;
    
     private String name;
@@ -55,7 +54,6 @@ public class StatsData {
     private HighScore highscore;
     private String packName;
     private String songName;
-    private Difficulty difficulty;
     private String steptype;
     private String level;
     private int numTimes;
@@ -65,9 +63,9 @@ public class StatsData {
 
     
     public StatsData() {
-        difficulties = new ArrayList<>();
         prevPackName = "";
         stats = new File ("H:\\My Documents\\NetBeansProjects\\StatsReader\\StepmaniaStatsReader\\src\\Model\\Casual-Stats.xml");
+        difficulties = new ArrayList<Difficulty>();
         ReadStatisticsFromXML();
 
    }
@@ -95,7 +93,6 @@ public class StatsData {
                   //This gets the attribute information of each song which is just the file path, and makes it look pretty
                   String directory = theSong.getAttribute("Dir");
                   String[] songString = directory.split("/");
-
                   try {
 
                         setPackName(songString[1]);
@@ -110,20 +107,12 @@ public class StatsData {
                   NodeList steps = theSong.getElementsByTagName("Steps");
                     
                   for (int count = 0; count < steps.getLength(); count++) {
-                      try {
-                      System.out.println("Adding: " + getSongName() + difficulties.get(0).getPScore() + "\nto ArrayList of Difficulties");
-                      }
-                      catch (IndexOutOfBoundsException e) {
-                      	System.out.println("e");
-                      }
                      Node node1 = steps.item(count);
                      //Now Let's label them properly
                      if (node1.getNodeType() == node1.ELEMENT_NODE) {
-                    	 	System.out.println(getDifficulties().size() + " : " + highscores.size());
                             Element step = (Element) node1;
                             setLevel(step.getAttribute("Difficulty"));
                             setSteptype(step.getAttribute("StepsType"));
-                            System.out.println(level);
                             //Let's make the step type prettier
                             if (getSteptype().equals("dance-single")) {
                                     setSteptype("Singles");
@@ -133,11 +122,8 @@ public class StatsData {
     //********************************************************************************************************************************                       
                             //Let's get all the HighScore stuffs available for this song
                             NodeList hs = step.getElementsByTagName("HighScoreList");  
-                            for (int t = 0; t < hs.getLength(); t++) {
-                                
-                                Node node2 = hs.item(t);
-
-                                
+                            for (int t = 0; t < hs.getLength(); t++) {                               
+                                Node node2 = hs.item(t);               
                                 if (node2.getNodeType() == node2.ELEMENT_NODE) {
                                     Element hsElement = (Element) node2;
                                     
@@ -145,7 +131,7 @@ public class StatsData {
                                     NodeList highScoreList = hsElement.getElementsByTagName("HighScore");
                                     System.out.println("Beginning a Loop of Each HighScore\n\n");
                                     for (int w = 0; w < highScoreList.getLength(); w++) {
-                                        System.out.println("New HighScore!!!! " + getSongName() + " " + level);
+                                        //System.out.println("New HighScore!!!! " + getSongName() + " " + level);
                                         Node node3 = highScoreList.item(w);
                                         //Now Let's label them properly
                                         if (node1.getNodeType() == node3.ELEMENT_NODE) {
@@ -209,26 +195,14 @@ public class StatsData {
                                             setHighscore(new HighScore(getName(), getGrade(), getScore(), getPercent(), getDate(), getRadar(), getNth(), getNscores()));
                                             //Just adding that highscore to the list
                                             getHighscores().add(getHighscore());
-                                            System.out.println(getHighscore().toString());
-                                            System.out.println("Adding to highscore list!");
-                                            System.out.println(getDifficulties().size() + " : " + highscores.size());
-                                            
                                         }
 
                                 }
-
-                                    System.out.println(getDifficulties().size() + " : " + highscores.size());
-
-                                    System.out.println("Creating a difficulty " + level + " " + songName + steptype + highscores);
-                                    difficulty = new Difficulty(songName, level, steptype, highscores);
-                                    difficulties.add(difficulty);
-                                    System.out.println(difficulties.size() + " : " + highscores.size());
-
-                                    System.out.println("Clearing HighScores");
-                                    highscores.clear();
-                                    System.out.println(getDifficulties().size() + " : " + highscores.size());
-                            }  
-                                
+                                    
+                            }
+                            Difficulty stepDifficulty = new Difficulty(songName, level, steptype, (ArrayList) highscores.clone());
+                            difficulties.add(stepDifficulty);                           
+                            highscores.clear();
                         }
 
                     }
@@ -236,10 +210,9 @@ public class StatsData {
                 }
                   
             }
-           setSong(new Song(getPackName(), getSongName(), getDifficulties()));  
-            getDifficulties().clear();
-            System.out.println("Creating song with ArrayList of Difficulties then Clearing Difficulties\n");
             
+            setSong(new Song(getPackName(), getSongName(), (ArrayList) difficulties.clone()));  
+            difficulties.clear();
             if (getSong().getTitle() != "null") {
                 getAllSongs().add(getSong());
 
@@ -461,19 +434,6 @@ public class StatsData {
         this.AllSongs = AllSongs;
     }
 
-    /**
-     * @return the difficulties
-     */
-    public ArrayList<Difficulty> getDifficulties() {
-        return difficulties;
-    }
-
-    /**
-     * @param difficulties the difficulties to set
-     */
-    public void setDifficulties(ArrayList<Difficulty> difficulties) {
-        this.difficulties = difficulties;
-    }
 
     /**
      * @return the song
@@ -641,20 +601,6 @@ public class StatsData {
      */
     public void setSongName(String songName) {
         this.songName = songName;
-    }
-
-    /**
-     * @return the difficulty
-     */
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    /**
-     * @param difficulty the difficulty to set
-     */
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
     }
 
     /**

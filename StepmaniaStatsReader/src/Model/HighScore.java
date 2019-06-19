@@ -29,9 +29,6 @@ public class HighScore {
         Nscores = c;
     }
 
-    HighScore(String name, String grade, int score, double percent, NoteScores noteScores) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     public String toString() {
         return(getName() + " received a(n) " + getGrade() + " with a " + getPercent() + "% and " + getScore() + "pts on " + getDate() + " ");
