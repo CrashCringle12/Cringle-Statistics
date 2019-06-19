@@ -62,9 +62,9 @@ public class StatsData {
     private File stats;
 
     
-    public StatsData() {
+    public StatsData(File file) {
         prevPackName = "";
-        stats = new File ("H:\\My Documents\\NetBeansProjects\\StatsReader\\StepmaniaStatsReader\\src\\Model\\Casual-Stats.xml");
+        stats = file;
         difficulties = new ArrayList<Difficulty>();
         ReadStatisticsFromXML();
 
@@ -129,7 +129,6 @@ public class StatsData {
                                     
     //********************************************************************************************************************************                              
                                     NodeList highScoreList = hsElement.getElementsByTagName("HighScore");
-                                    System.out.println("Beginning a Loop of Each HighScore\n\n");
                                     for (int w = 0; w < highScoreList.getLength(); w++) {
                                         //System.out.println("New HighScore!!!! " + getSongName() + " " + level);
                                         Node node3 = highScoreList.item(w);
@@ -154,13 +153,15 @@ public class StatsData {
                                                             setName(nodeValue);
                                                             break;
                                                         case "Grade":
-                                                            setGrade(nodeValue);
+                                                            setGrade(convertGrade(nodeValue));
                                                             break;
                                                         case "Score":
                                                             setScore(Integer.parseInt(nodeValue));
                                                             break;
                                                         case "PercentDP":
-                                                            setPercent(Double.parseDouble(nodeValue));
+                                                        	double value = Double.parseDouble(nodeValue);
+                                                        	value = ((int) Math.round(value * 10000))/100.0;
+                                                            setPercent(value);
                                                             break;
                                                         case "DateTime":
                                                             setDate(nodeValue);
@@ -236,6 +237,68 @@ public class StatsData {
             
         }
         return str;
+    }
+    public String convertGrade(String tierGrade) {
+    	String dynamite = tierGrade;
+    	switch(tierGrade) {
+			case "Tier17":
+				dynamite = "D";
+				break;	
+    		case "Tier16":
+				dynamite = "C-";
+				break;
+    		case "Tier15":
+				dynamite = "C";
+				break;
+    		case "Tier14":
+				dynamite = "C+";
+				break;
+    		case "Tier13":
+				dynamite = "B-";
+				break;
+    		case "Tier12":
+				dynamite = "B";
+				break;
+    		case "Tier11":
+				dynamite = "B+";
+				break;
+    		case "Tier10":
+				dynamite = "A-";
+				break;
+    		case "Tier09":
+				dynamite = "A";
+				break;
+    		case "Tier08":
+				dynamite = "A+ ";
+				break;
+    		case "Tier07":
+				dynamite = "S-";
+				break;
+    		case "Tier06":
+				dynamite = "S";
+				break;
+    		case "Tier05":
+				dynamite = "S+";
+				break;
+    		case "Tier04":
+				dynamite = "☆";
+				break;
+    		case "Tier03":
+				dynamite = "☆☆";
+				break;
+    		case "Tier02":
+				dynamite = "☆☆☆";
+				break;
+    		case "Tier01":
+				dynamite = "☆☆Perfection☆☆";
+				break;
+    		case "Failed":
+				dynamite = "Failure";
+				break;
+
+    			
+    	}
+		return dynamite;
     }
 
     /**

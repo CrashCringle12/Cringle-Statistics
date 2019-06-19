@@ -29,7 +29,7 @@ public class MainFrame {
         frame.getContentPane().add(scrollPane,BorderLayout.CENTER);
  
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(550, 200);
+        frame.setSize(1000, 800);
         frame.setVisible(true);
 
     }
