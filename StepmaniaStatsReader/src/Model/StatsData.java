@@ -1,12 +1,8 @@
 package Model;
 
-import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -14,7 +10,6 @@ import java.util.Map;
  * @author L627B
  */
 import java.io.File;
-import static java.lang.Integer.parseInt;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -65,11 +60,11 @@ public class StatsData {
     public StatsData(File file) {
         prevPackName = "";
         stats = file;
-        difficulties = new ArrayList<Difficulty>();
+        difficulties = new ArrayList<>();
         ReadStatisticsFromXML();
 
    }
-    public void ReadStatisticsFromXML() {
+    public final void ReadStatisticsFromXML() {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -109,7 +104,7 @@ public class StatsData {
                   for (int count = 0; count < steps.getLength(); count++) {
                      Node node1 = steps.item(count);
                      //Now Let's label them properly
-                     if (node1.getNodeType() == node1.ELEMENT_NODE) {
+                     if (node1.getNodeType() == Node.ELEMENT_NODE) {
                             Element step = (Element) node1;
                             setLevel(step.getAttribute("Difficulty"));
                             setSteptype(step.getAttribute("StepsType"));
@@ -124,7 +119,7 @@ public class StatsData {
                             NodeList hs = step.getElementsByTagName("HighScoreList");  
                             for (int t = 0; t < hs.getLength(); t++) {                               
                                 Node node2 = hs.item(t);               
-                                if (node2.getNodeType() == node2.ELEMENT_NODE) {
+                                if (node2.getNodeType() == Node.ELEMENT_NODE) {
                                     Element hsElement = (Element) node2;
                                     
     //********************************************************************************************************************************                              
@@ -133,7 +128,7 @@ public class StatsData {
                                         //System.out.println("New HighScore!!!! " + getSongName() + " " + level);
                                         Node node3 = highScoreList.item(w);
                                         //Now Let's label them properly
-                                        if (node1.getNodeType() == node3.ELEMENT_NODE) {
+                                        if (node1.getNodeType() == Node.ELEMENT_NODE) {
                                             Element highScoreElement = (Element) node3;
                                             
     //********************************************************************************************************************************                                      
@@ -143,7 +138,7 @@ public class StatsData {
                                             for (int r = 0; r < hsList.getLength(); r++) {
                                                Node node4 = hsList.item(r);
                                                
-                                               if (node4.getNodeType() == node4.ELEMENT_NODE) {
+                                               if (node4.getNodeType() == Node.ELEMENT_NODE) {
                                                    
                                                     Element hsElementos = (Element) node4;
                                                     String nodeName = hsElementos.getNodeName();
@@ -169,7 +164,7 @@ public class StatsData {
                                                         case "TapNoteScores":
                                                             NodeList node5List = hsElementos.getChildNodes();
                                                             for (int b = 0; b < node5List.getLength(); b++ ) {
-                                                                if (node5List.item(b).getNodeType() == node5List.item(b).ELEMENT_NODE) {
+                                                                if (node5List.item(b).getNodeType() == Node.ELEMENT_NODE) {
                                                                     //System.out.println(b + ": " +(node5List.item(b)).getTextContent() + "-" + node5List.item(b).getNodeType());
                                                                     getArroz().add(Integer.parseInt((node5List.item(b)).getTextContent()));
                                                                 }
@@ -178,7 +173,7 @@ public class StatsData {
                                                         case "RadarValues":
                                                             NodeList node6List = hsElementos.getChildNodes();
                                                             for (int b = 0; b < node6List.getLength(); b++ ) {
-                                                                if (node6List.item(b).getNodeType() == node6List.item(b).ELEMENT_NODE) {
+                                                                if (node6List.item(b).getNodeType() == Node.ELEMENT_NODE) {
                                                                     getArro().add(Double.parseDouble((node6List.item(b)).getTextContent()));
                                                                     if (getArro().size() > 4) {
                                                                         getArroze().add((int) Double.parseDouble((node6List.item(b)).getTextContent()));
@@ -214,28 +209,26 @@ public class StatsData {
             
             setSong(new Song(getPackName(), getSongName(), (ArrayList) difficulties.clone()));  
             difficulties.clear();
-            if (getSong().getTitle() != "null") {
+            if (!"null".equals(getSong().getTitle())) {
                 getAllSongs().add(getSong());
 
             }
-            if (getPackName() != getPrevPackName()) {
+            if (getPackName() == null ? getPrevPackName() != null : !getPackName().equals(getPrevPackName())) {
                 getSearchPack().put(getPackName(), getAllSongs());
             }
             setPrevPackName(getPackName());       
         }   
             
         } catch (IOException | ParserConfigurationException | SAXException e) {
-            e.printStackTrace();
             }
     }
     public ArrayList<String> simplify() {
         ArrayList<String> str = new ArrayList<>();
-        for (Song n : getAllSongs()) {
-            for (String p : n.simplify()) {
+        getAllSongs().forEach((n) -> {
+            n.simplify().forEach((p) -> {
                 str.add(p);
-            }
-            
-        }
+            });
+        });
         return str;
     }
     public String convertGrade(String tierGrade) {
