@@ -10,6 +10,7 @@ import java.util.Map;
  * @author L627B
  */
 import java.io.File;
+import java.util.Comparator;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -18,21 +19,32 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class StatsData {
-    private Map<String, ArrayList<Song>> searchByName = new HashMap<>();
-    private Map<String, Song> searchSongName = new HashMap<>();
-    private Map<String, ArrayList<Song>> searchTier = new HashMap<>();
-    private Map<String, ArrayList<Song>> searchPercent = new HashMap<>();
-    private Map<Integer,ArrayList<Song>> searchTimesPlayed = new HashMap<>();
-    private Map<String, ArrayList<Song>> searchLastPlayed= new HashMap<>();
-    private Map<String, ArrayList<Song>> searchDifficulty = new HashMap<>();
-    private Map<String, ArrayList<Song>> searchModifiers = new HashMap<>();
-    private Map<String, ArrayList<Song>> searchType = new HashMap<>();
+public class StatsData implements Searchable, Sortable, Displayable {
+    private int sortField = 0;
+    private int foundIndex;
+    private boolean found = false;
+    private int searchByField;
+    private int firstLineToDisplay = 10;
+    private int lineToHighlight = 0;
+    private int lastLineToDisplay = 15;
+    private int linesBeingDisplayed = 10;
+    
+    
+    
+    private Map<String, String[]> searchByName = new HashMap<>();
+    private Map<String, String[]> searchSongName = new HashMap<>();
+    private Map<String, String[]> searchTier = new HashMap<>();
+    private Map<String, String[]> searchPercent = new HashMap<>();
+    private Map<Integer, Song> searchTimesPlayed = new HashMap<>();
+    private Map<String, Song> searchLastPlayed= new HashMap<>();
+    private Map<String, Song> searchDifficulty = new HashMap<>();
+    private Map<String, Song> searchModifiers = new HashMap<>();
+    private Map<String, Song> searchType = new HashMap<>();
     private Map<String, ArrayList<Song>> searchPack= new HashMap<>();
     
-    private ArrayList<Integer> arroz = new ArrayList<>();
-    private ArrayList<Integer> arroze = new ArrayList<>();
-    private ArrayList<Double> arro = new ArrayList<>();
+    ArrayList<Integer> arroz = new ArrayList<>();
+    ArrayList<Integer> arroze = new ArrayList<>();
+    ArrayList<Double> arro = new ArrayList<>();
     ArrayList<Difficulty> difficulties;
     private ArrayList<Song> AllSongs = new ArrayList<>();
     private Song song;
@@ -55,13 +67,22 @@ public class StatsData {
     private String prevPackName;
 
     private File stats;
-
+    private ArrayList<String[]> displayedData;
     
     public StatsData(File file) {
+        displayedData = new ArrayList<>();
         prevPackName = "";
         stats = file;
         difficulties = new ArrayList<>();
         ReadStatisticsFromXML();
+        lastLineToDisplay = displayedData.size();
+        firstLineToDisplay = 0;
+        linesBeingDisplayed = 25;
+        lineToHighlight = 35;
+        sortField = 0;
+        found = false;
+        foundIndex = 10;
+        searchByField = 0;
 
    }
     public final void ReadStatisticsFromXML() {
@@ -207,11 +228,17 @@ public class StatsData {
                   
             }
             
-            setSong(new Song(getPackName(), getSongName(), (ArrayList) difficulties.clone()));  
-            difficulties.clear();
+            setSong(new Song(getPackName(), getSongName(), (ArrayList) difficulties.clone())); 
             if (!"null".equals(getSong().getTitle())) {
                 getAllSongs().add(getSong());
 
+            }
+            difficulties.clear();
+            for (Difficulty o : getSong().getDifficulties()) {
+            	for (HighScore m : o.getPScore()) {
+            		
+                        System.out.println(m.getName());
+            	}
             }
             if (getPackName() == null ? getPrevPackName() != null : !getPackName().equals(getPrevPackName())) {
                 getSearchPack().put(getPackName(), getAllSongs());
@@ -221,7 +248,26 @@ public class StatsData {
             
         } catch (IOException | ParserConfigurationException | SAXException e) {
             }
+        for (int i = 0; i < getAllSongs().size(); i++) {            
+            for (int o = 0; o < getAllSongs().get(i).getDifficulties().size(); o++) {
+            	String pack = getAllSongs().get(i).getPack();
+            	String song = getAllSongs().get(i).getTitle();
+            	String steptype = getAllSongs().get(i).getDifficulties().get(o).getSteptype();
+            	String level = getAllSongs().get(i).getDifficulties().get(o).getLevel();
+            	for (int w = 0; w < getAllSongs().get(i).getDifficulties().get(o).getPScore().size(); w++) {
+            		String name = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getName();
+            		String grade = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getGrade();
+            		double percent = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getPercent();
+            		double points = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getScore();
+            		String date = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getDate();
+                        String[] obj = {pack, song, steptype, level, name, grade, percent + "%", points + "", date};
+                        getSearchByName().put(name, obj);
+                        displayedData.add(obj);
+            	}
+            }
+        }
     }
+
     public ArrayList<String> simplify() {
         ArrayList<String> str = new ArrayList<>();
         getAllSongs().forEach((n) -> {
@@ -293,130 +339,143 @@ public class StatsData {
     	}
 		return dynamite;
     }
-
+    public ArrayList<String> getHeaders() {
+        ArrayList<String> headers = new ArrayList<String>();
+        headers.add("Pack");
+        headers.add("Song");
+        headers.add("StepType");
+        headers.add("Level");
+        headers.add("Name");
+        headers.add("Grade");
+        headers.add("Percent");
+        headers.add("Points");
+        headers.add("Date");
+        return headers;
+    }
+    
     /**
      * @return the searchByName
      */
-    public Map<String, ArrayList<Song>> getSearchByName() {
+    public Map<String, String[]> getSearchByName() {
         return searchByName;
     }
 
     /**
      * @param searchByName the searchByName to set
      */
-    public void setSearchByName(Map<String, ArrayList<Song>> searchByName) {
+    public void setSearchByName(Map<String, String[]> searchByName) {
         this.searchByName = searchByName;
     }
 
     /**
      * @return the searchSongName
      */
-    public Map<String, Song> getSearchSongName() {
+    public Map<String, String[]> getSearchSongName() {
         return searchSongName;
     }
 
     /**
      * @param searchSongName the searchSongName to set
      */
-    public void setSearchSongName(Map<String, Song> searchSongName) {
+    public void setSearchSongName(Map<String, String[]> searchSongName) {
         this.searchSongName = searchSongName;
     }
 
     /**
      * @return the searchTier
      */
-    public Map<String, ArrayList<Song>> getSearchTier() {
+    public Map<String, String[]> getSearchTier() {
         return searchTier;
     }
 
     /**
      * @param searchTier the searchTier to set
      */
-    public void setSearchTier(Map<String, ArrayList<Song>> searchTier) {
+    public void setSearchTier(Map<String, String[]> searchTier) {
         this.searchTier = searchTier;
     }
 
     /**
      * @return the searchPercent
      */
-    public Map<String, ArrayList<Song>> getSearchPercent() {
+    public Map<String, String[]> getSearchPercent() {
         return searchPercent;
     }
 
     /**
      * @param searchPercent the searchPercent to set
      */
-    public void setSearchPercent(Map<String, ArrayList<Song>> searchPercent) {
+    public void setSearchPercent(Map<String, String[]> searchPercent) {
         this.searchPercent = searchPercent;
     }
 
     /**
      * @return the searchTimesPlayed
      */
-    public Map<Integer,ArrayList<Song>> getSearchTimesPlayed() {
+    public Map<Integer, Song> getSearchTimesPlayed() {
         return searchTimesPlayed;
     }
 
     /**
      * @param searchTimesPlayed the searchTimesPlayed to set
      */
-    public void setSearchTimesPlayed(Map<Integer,ArrayList<Song>> searchTimesPlayed) {
+    public void setSearchTimesPlayed(Map<Integer, Song> searchTimesPlayed) {
         this.searchTimesPlayed = searchTimesPlayed;
     }
 
     /**
      * @return the searchLastPlayed
      */
-    public Map<String, ArrayList<Song>> getSearchLastPlayed() {
+    public Map<String, Song> getSearchLastPlayed() {
         return searchLastPlayed;
     }
 
     /**
      * @param searchLastPlayed the searchLastPlayed to set
      */
-    public void setSearchLastPlayed(Map<String, ArrayList<Song>> searchLastPlayed) {
+    public void setSearchLastPlayed(Map<String, Song> searchLastPlayed) {
         this.searchLastPlayed = searchLastPlayed;
     }
 
     /**
      * @return the searchDifficulty
      */
-    public Map<String, ArrayList<Song>> getSearchDifficulty() {
+    public Map<String, Song> getSearchDifficulty() {
         return searchDifficulty;
     }
 
     /**
      * @param searchDifficulty the searchDifficulty to set
      */
-    public void setSearchDifficulty(Map<String, ArrayList<Song>> searchDifficulty) {
+    public void setSearchDifficulty(Map<String, Song> searchDifficulty) {
         this.searchDifficulty = searchDifficulty;
     }
 
     /**
      * @return the searchModifiers
      */
-    public Map<String, ArrayList<Song>> getSearchModifiers() {
+    public Map<String, Song> getSearchModifiers() {
         return searchModifiers;
     }
 
     /**
      * @param searchModifiers the searchModifiers to set
      */
-    public void setSearchModifiers(Map<String, ArrayList<Song>> searchModifiers) {
+    public void setSearchModifiers(Map<String, Song> searchModifiers) {
         this.searchModifiers = searchModifiers;
     }
 
     /**
      * @return the searchType
      */
-    public Map<String, ArrayList<Song>> getSearchType() {
+    public Map<String, Song> getSearchType() {
         return searchType;
     }
 
     /**
      * @param searchType the searchType to set
      */
-    public void setSearchType(Map<String, ArrayList<Song>> searchType) {
+    public void setSearchType(Map<String, Song> searchType) {
         this.searchType = searchType;
     }
 
@@ -742,4 +801,259 @@ public class StatsData {
     public void setHighscore(HighScore highscore) {
         this.highscore = highscore;
     }
+    /**
+     * @return the foundIndex
+     */
+    public int getFoundIndex() {
+        return foundIndex;
+    }
+
+    /**
+     * @param foundIndex the foundIndex to set
+     */
+    public void setFoundIndex(int foundIndex) {
+        this.foundIndex = foundIndex;
+    }
+
+    /**
+     * @return the found
+     */
+    public boolean getFound() {
+        return found;
+    }
+
+    /**
+     * @param found the found to set
+     */
+    public void setFound(boolean found) {
+        this.found = found;
+    }
+
+    /**
+     * @return the searchByField
+     */
+    public int getSearchByField() {
+        return searchByField;
+    }
+
+    /**
+     * @param searchByField the searchByField to set
+     */
+    public void setSearchByField(int searchByField) {
+        this.searchByField = searchByField;
+    }
+
+    @Override
+    public boolean search(String searchTerm) {
+        int counter = 0;
+        
+        if(sortField == 4) {
+            
+            found = searchByName.containsKey(searchTerm);
+            for (int i = 0; i < displayedData.size(); i++) {
+                if (displayedData.get(i)[4] == searchByName.get(searchTerm)[4]) {
+                    counter++;
+                    foundIndex=counter;
+                    System.out.println(displayedData.get(i)[4]);
+                    System.out.println(searchByName.get(searchTerm)[4]);
+                    
+                }
+            }
+        }
+
+        return found;
+    }
+
+    /**
+     * @return the sortField
+     */
+    public int getSortField() {
+        
+        return sortField;
+    }
+
+    /**
+     * @param sortField the sortField to set
+     */
+    @Override
+    public void setSortField(int sortField) {
+        this.sortField = sortField;
+    }
+    @Override
+    public void sort(int sortField) {
+            String[][] arroza = new String[displayedData.size()][9];
+            for (int i = 0; i < displayedData.size(); i++) {
+                arroza[i] = displayedData.get(i);
+
+            }
+            if (sortField == 0) {
+                for (int i = 0; i < arroza.length - 1; i++) {
+                    int minPos = i;
+                    for (int t = i + 1; t < arroza.length; t++) {
+                        if (arroza[t][0].toUpperCase().compareTo(arroza[minPos][0].toUpperCase()) < arroza[minPos][0].toUpperCase().compareTo(arroza[t][0].toUpperCase())) {
+                            minPos = t;
+                        }
+                    }
+                    String[] temp = arroza[minPos];
+                    arroza[minPos] = arroza[i];
+                    arroza[i] = temp;
+                }
+            }
+            //{pack, song, steptype, level, name, grade, percent + "%", points, date};
+            if (sortField == 1) {
+                for (int i = 0; i < arroza.length - 1; i++) {
+                    int minPos = i;
+                    for (int t = i + 1; t < arroza.length; t++) {
+                        if (arroza[t][1].toUpperCase().compareTo(arroza[minPos][1].toUpperCase()) < arroza[minPos][1].toUpperCase().compareTo(arroza[t][1].toUpperCase())) {
+                            minPos = t;
+                        }
+                    }
+                    String[] temp = arroza[minPos];
+                    arroza[minPos] = arroza[i];
+                    arroza[i] = temp;
+                }
+            }
+            if (sortField == 2) {
+                for (int i = 0; i < arroza.length - 1; i++) {
+                    int minPos = i;
+                    for (int t = i + 1; t < arroza.length; t++) {
+                        if (arroza[t][2].toUpperCase().compareTo(arroza[minPos][2].toUpperCase()) < arroza[minPos][2].toUpperCase().compareTo(arroza[t][2].toUpperCase())) {
+                            minPos = t;
+                        }
+                    }
+                    String[] temp = arroza[minPos];
+                    arroza[minPos] = arroza[i];
+                    arroza[i] = temp;
+                }
+            }
+            if (sortField == 3) {
+                for (int i = 0; i < arroza.length - 1; i++) {
+                    int minPos = i;
+                    for (int t = i + 1; t < arroza.length; t++) {
+                        if (arroza[t][3].toUpperCase().compareTo(arroza[minPos][3].toUpperCase()) < arroza[minPos][3].toUpperCase().compareTo(arroza[t][3].toUpperCase())) {
+                            minPos = t;
+                        }
+                    }
+                    String[] temp = arroza[minPos];
+                    arroza[minPos] = arroza[i];
+                    arroza[i] = temp;
+                }
+            }
+            if (sortField == 4) {
+                for (int i = 0; i < arroza.length - 1; i++) {
+                    int minPos = i;
+                    for (int t = i + 1; t < arroza.length; t++) {
+                        if (arroza[t][4].toUpperCase().compareTo(arroza[minPos][4].toUpperCase()) < arroza[minPos][4].toUpperCase().compareTo(arroza[t][4].toUpperCase())) {
+                            minPos = t;
+                        }
+                    }
+                    String[] temp = arroza[minPos];
+                    arroza[minPos] = arroza[i];
+                    arroza[i] = temp;
+                }
+            }
+            if (sortField == 5) {
+                for (int i = 0; i < arroza.length - 1; i++) {
+                    int minPos = i;
+                    for (int t = i + 1; t < arroza.length; t++) {
+                        if (arroza[t][5].toUpperCase().compareTo(arroza[minPos][5].toUpperCase()) < arroza[minPos][5].toUpperCase().compareTo(arroza[t][5].toUpperCase())) {
+                            minPos = t;
+                        }
+                    }
+                    String[] temp = arroza[minPos];
+                    arroza[minPos] = arroza[i];
+                    arroza[i] = temp;
+                }
+            }            
+            for (int i = 0; i < displayedData.size(); i++) {
+                displayedData.set(i, arroza[i]);
+            }
+
+    }
+    /**
+     * @return the firstLineToDisplay
+     */
+    @Override
+    public int getFirstLineToDisplay() {
+        return firstLineToDisplay;
+    }
+
+    /**
+     * @param firstLineToDisplay the firstLineToDisplay to set
+     */
+    @Override
+    public void setFirstLineToDisplay(int firstLineToDisplay) {
+        
+        this.firstLineToDisplay = firstLineToDisplay;
+        if(firstLineToDisplay < 0) {
+            this.firstLineToDisplay = 0;
+        }
+        if (firstLineToDisplay + linesBeingDisplayed > lastLineToDisplay) {
+            this.firstLineToDisplay = (lastLineToDisplay - linesBeingDisplayed);
+        }
+    }
+
+    /**
+     * @return the lineToHighlight
+     */
+    @Override
+    public int getLineToHighlight() {
+        return lineToHighlight;
+    }
+
+    /**
+     * @param lineToHighlight the lineToHighlight to set
+     */
+    @Override
+    public void setLineToHighlight(int lineToHighlight) {
+        this.lineToHighlight = lineToHighlight;
+    }
+
+    /**
+     * @return the lastLineToDisplay
+     */
+    @Override
+    public int getLastLineToDisplay() {
+        return lastLineToDisplay;
+    }
+
+    /**
+     * @param lastLineToDisplay the lastLineToDisplay to set
+     */
+    @Override
+    public void setLastLineToDisplay(int lastLineToDisplay) {
+        this.lastLineToDisplay = firstLineToDisplay + linesBeingDisplayed - 1;
+    }
+
+    /**
+     * @return the linesBeingDisplayed
+     */
+    @Override
+    public int getLinesBeingDisplayed() {
+        return linesBeingDisplayed;
+    }
+
+    /**
+     * @param linesBeingDisplayed the linesBeingDisplayed to set
+     */
+    @Override
+    public void setLinesBeingDisplayed(int linesBeingDisplayed) {
+        this.linesBeingDisplayed = linesBeingDisplayed;
+    }
+
+    /**
+     * @return the displayedData
+     */
+    public ArrayList<String[]> getDisplayedData() {
+        return displayedData;
+    }
+
+    /**
+     * @param displayedData the displayedData to set
+     */
+    public void setDisplayedData(ArrayList<String[]> displayedData) {
+        this.displayedData = displayedData;
+    }
+        
 }
+

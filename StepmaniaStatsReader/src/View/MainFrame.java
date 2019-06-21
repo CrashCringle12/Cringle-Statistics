@@ -5,49 +5,66 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
  
-public class MainFrame {
-        private JFrame frame;
+public class MainFrame extends JFrame {
         private DefaultTableModel tableModel;
         private JTable table;
         private JScrollPane scrollPane;
         private JLabel lblHeading;
-        
+        private InitialPanel ip;
     public MainFrame() {
-        frame = new JFrame("Cringle Statistics Alpha");
-        String col[] = {"Pack", "Song", "StepType", "Difficulty", "Name", "Grade", "Percent", "Points", "Date"};
-        tableModel = new DefaultTableModel(col, 0);
-        table = new JTable(getTableModel());
-        scrollPane = new JScrollPane(getTable());
-        table.setFillsViewportHeight(true);
-        
-        JLabel lblHeading = new JLabel("Stepmania Statistics");
-        lblHeading.setFont(new Font("Arial",Font.TRUETYPE_FONT,24));
- 
-        frame.getContentPane().setLayout(new BorderLayout());
- 
-        frame.getContentPane().add(lblHeading,BorderLayout.PAGE_START);
-        frame.getContentPane().add(scrollPane,BorderLayout.CENTER);
- 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 800);
-        frame.setVisible(true);
+        super("Cringle Statistics Alpha");
+        setupLayoutForMacs();
+        ip = new InitialPanel();
+        add(ip, "Center");
+        //------------------------------------------------------
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(1000, 800);
+        setVisible(true);
+//        String col[] = {"Pack", "Song", "StepType", "Difficulty", "Name", "Grade", "Percent", "Points", "Date"};
+//        tableModel = new DefaultTableModel(col, 0);
+//        table = new JTable(getTableModel());
+//        scrollPane = new JScrollPane(getTable());
+//        table.setFillsViewportHeight(true);
+//        
+//        JLabel lblHeading = new JLabel("Stepmania Statistics");
+//        lblHeading.setFont(new Font("Arial",Font.TRUETYPE_FONT,24));
+// 
+//        frame.getContentPane().setLayout(new BorderLayout());
+// 
+//        frame.getContentPane().add(lblHeading,BorderLayout.PAGE_START);
+//        frame.getContentPane().add(scrollPane,BorderLayout.CENTER);
+//         
 
+
+    }
+    private void setupLayoutForMacs()
+    {
+        // On some MACs it might be necessary to have the statement below 
+        //for the background color of the button to appear    
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        //------------------------------------------------------
+    }
+    /**
+     * @return the ip
+     */
+    public InitialPanel getIp()
+    {
+        return ip;
     }
 
     /**
-     * @return the frame
+     * @param ip the ip to set
      */
-    public JFrame getFrame() {
-        return frame;
+    public void setIp(InitialPanel ip)
+    {
+        this.ip = ip;
     }
-
-    /**
-     * @param frame the frame to set
-     */
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
     /**
      * @return the tableModel
      */
