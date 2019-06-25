@@ -2,8 +2,6 @@ package View;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import java.awt.*;
  
 public class MainFrame extends JFrame {
         private DefaultTableModel tableModel;
@@ -20,21 +18,6 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1000, 800);
         setVisible(true);
-//        String col[] = {"Pack", "Song", "StepType", "Difficulty", "Name", "Grade", "Percent", "Points", "Date"};
-//        tableModel = new DefaultTableModel(col, 0);
-//        table = new JTable(getTableModel());
-//        scrollPane = new JScrollPane(getTable());
-//        table.setFillsViewportHeight(true);
-//        
-//        JLabel lblHeading = new JLabel("Stepmania Statistics");
-//        lblHeading.setFont(new Font("Arial",Font.TRUETYPE_FONT,24));
-// 
-//        frame.getContentPane().setLayout(new BorderLayout());
-// 
-//        frame.getContentPane().add(lblHeading,BorderLayout.PAGE_START);
-//        frame.getContentPane().add(scrollPane,BorderLayout.CENTER);
-//         
-
 
     }
     private void setupLayoutForMacs()

@@ -50,7 +50,7 @@ public class Controller {
                     model.getStData().setLineToHighlight(model.getStData().getFoundIndex() - 1);
                     model.getStData().setFirstLineToDisplay(model.getStData().getFoundIndex() - 1);
                     
-                    for (int i = 0; i < 8; i++) {
+                    for (int i = 0; i < 9; i++) {
                         System.out.print("Highlight: " + model.getStData().getLineToHighlight());
                         System.out.println(view.getMf().getIp().cp.getBs().get(i).getText());
                         view.getMf().getIp().cp.getBs().get(i).setBackground(Color.pink);

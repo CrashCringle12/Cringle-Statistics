@@ -21,7 +21,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import Model.Sort;
 
 public class StatsData implements Searchable, Sortable, Displayable {
     private int sortField = 0;
@@ -739,6 +738,7 @@ public class StatsData implements Searchable, Sortable, Displayable {
                 	
                     counter++;
                     if (i[w] == searches.get(w).get(searchTerm)[w]) {
+                        
                         foundIndex = counter;
                     }
                 }
