@@ -11,6 +11,6 @@ package Model;
  */
 public interface Sortable {
   public int getSortField();
-  public void sort(int sortField); 
+  public void sort(int sortField, int sortType); 
   public void setSortField(int sortField);
 }

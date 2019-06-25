@@ -88,12 +88,14 @@ public class Controller {
                                 view.getMf().getIp().cp.getHeaders().get(f).setBackground(Color.lightGray);
                             } else {
                                 view.getMf().getIp().cp.getHeaders().get(f).setBackground(Color.pink);
+                                model.getStData().setSortType(o);
                             }
                         }
                     }
                     model.getStData().setSortField(o);
                     //model.getStData().setSearchByField(o);
-                    model.getStData().sort(model.getStData().getSortField());
+                    
+                    model.getStData().sort(model.getStData().getSortField(), model.getStData().getSortType());
                     displayData();
  
                 }

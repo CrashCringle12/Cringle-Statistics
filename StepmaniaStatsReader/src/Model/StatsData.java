@@ -3,6 +3,7 @@ package Model;
 import javax.xml.parsers.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -10,7 +11,9 @@ import java.util.Map;
  * @author L627B
  */
 import java.io.File;
-import java.util.Comparator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -18,6 +21,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import Model.Sort;
 
 public class StatsData implements Searchable, Sortable, Displayable {
     private int sortField = 0;
@@ -28,7 +32,8 @@ public class StatsData implements Searchable, Sortable, Displayable {
     private int lineToHighlight = 0;
     private int lastLineToDisplay = 15;
     private int linesBeingDisplayed = 10;
-    
+    private int sortType = 0;
+    int sortFire = -1;
     
     
     private Map<String, String[]> searchByName = new HashMap<>();
@@ -234,12 +239,6 @@ public class StatsData implements Searchable, Sortable, Displayable {
 
             }
             difficulties.clear();
-            for (Difficulty o : getSong().getDifficulties()) {
-            	for (HighScore m : o.getPScore()) {
-            		
-                        System.out.println(m.getName());
-            	}
-            }
             if (getPackName() == null ? getPrevPackName() != null : !getPackName().equals(getPrevPackName())) {
                 getSearchPack().put(getPackName(), getAllSongs());
             }
@@ -258,9 +257,19 @@ public class StatsData implements Searchable, Sortable, Displayable {
             		String name = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getName();
             		String grade = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getGrade();
             		double percent = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getPercent();
-            		double points = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getScore();
+            		int points = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getScore();
             		String date = getAllSongs().get(i).getDifficulties().get(o).getPScore().get(w).getDate();
-                        String[] obj = {pack, song, steptype, level, name, grade, percent + "%", points + "", date};
+            			SimpleDateFormat formatter6=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            			SimpleDateFormat formate = new SimpleDateFormat("EEE. MMM d, yyyy hh:mmaaa");           			
+						Date date1 = new Date();
+						try {
+							date1 = formatter6.parse(date);
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						String datetime = formate.format(date1);
+
+                        String[] obj = {pack, song, steptype, level, name, grade, percent + "%", points + "", datetime};
                         getSearchByName().put(name, obj);
                         displayedData.add(obj);
             	}
@@ -329,7 +338,7 @@ public class StatsData implements Searchable, Sortable, Displayable {
 				dynamite = "☆☆☆";
 				break;
     		case "Tier01":
-				dynamite = "☆☆Perfection☆☆";
+				dynamite = "☆☆☆☆";
 				break;
     		case "Failed":
 				dynamite = "Failure";
@@ -854,8 +863,6 @@ public class StatsData implements Searchable, Sortable, Displayable {
                 if (displayedData.get(i)[4] == searchByName.get(searchTerm)[4]) {
                     counter++;
                     foundIndex=counter;
-                    System.out.println(displayedData.get(i)[4]);
-                    System.out.println(searchByName.get(searchTerm)[4]);
                     
                 }
             }
@@ -879,97 +886,7 @@ public class StatsData implements Searchable, Sortable, Displayable {
     public void setSortField(int sortField) {
         this.sortField = sortField;
     }
-    @Override
-    public void sort(int sortField) {
-            String[][] arroza = new String[displayedData.size()][9];
-            for (int i = 0; i < displayedData.size(); i++) {
-                arroza[i] = displayedData.get(i);
 
-            }
-            if (sortField == 0) {
-                for (int i = 0; i < arroza.length - 1; i++) {
-                    int minPos = i;
-                    for (int t = i + 1; t < arroza.length; t++) {
-                        if (arroza[t][0].toUpperCase().compareTo(arroza[minPos][0].toUpperCase()) < arroza[minPos][0].toUpperCase().compareTo(arroza[t][0].toUpperCase())) {
-                            minPos = t;
-                        }
-                    }
-                    String[] temp = arroza[minPos];
-                    arroza[minPos] = arroza[i];
-                    arroza[i] = temp;
-                }
-            }
-            //{pack, song, steptype, level, name, grade, percent + "%", points, date};
-            if (sortField == 1) {
-                for (int i = 0; i < arroza.length - 1; i++) {
-                    int minPos = i;
-                    for (int t = i + 1; t < arroza.length; t++) {
-                        if (arroza[t][1].toUpperCase().compareTo(arroza[minPos][1].toUpperCase()) < arroza[minPos][1].toUpperCase().compareTo(arroza[t][1].toUpperCase())) {
-                            minPos = t;
-                        }
-                    }
-                    String[] temp = arroza[minPos];
-                    arroza[minPos] = arroza[i];
-                    arroza[i] = temp;
-                }
-            }
-            if (sortField == 2) {
-                for (int i = 0; i < arroza.length - 1; i++) {
-                    int minPos = i;
-                    for (int t = i + 1; t < arroza.length; t++) {
-                        if (arroza[t][2].toUpperCase().compareTo(arroza[minPos][2].toUpperCase()) < arroza[minPos][2].toUpperCase().compareTo(arroza[t][2].toUpperCase())) {
-                            minPos = t;
-                        }
-                    }
-                    String[] temp = arroza[minPos];
-                    arroza[minPos] = arroza[i];
-                    arroza[i] = temp;
-                }
-            }
-            if (sortField == 3) {
-                for (int i = 0; i < arroza.length - 1; i++) {
-                    int minPos = i;
-                    for (int t = i + 1; t < arroza.length; t++) {
-                        if (arroza[t][3].toUpperCase().compareTo(arroza[minPos][3].toUpperCase()) < arroza[minPos][3].toUpperCase().compareTo(arroza[t][3].toUpperCase())) {
-                            minPos = t;
-                        }
-                    }
-                    String[] temp = arroza[minPos];
-                    arroza[minPos] = arroza[i];
-                    arroza[i] = temp;
-                }
-            }
-            if (sortField == 4) {
-                for (int i = 0; i < arroza.length - 1; i++) {
-                    int minPos = i;
-                    for (int t = i + 1; t < arroza.length; t++) {
-                        if (arroza[t][4].toUpperCase().compareTo(arroza[minPos][4].toUpperCase()) < arroza[minPos][4].toUpperCase().compareTo(arroza[t][4].toUpperCase())) {
-                            minPos = t;
-                        }
-                    }
-                    String[] temp = arroza[minPos];
-                    arroza[minPos] = arroza[i];
-                    arroza[i] = temp;
-                }
-            }
-            if (sortField == 5) {
-                for (int i = 0; i < arroza.length - 1; i++) {
-                    int minPos = i;
-                    for (int t = i + 1; t < arroza.length; t++) {
-                        if (arroza[t][5].toUpperCase().compareTo(arroza[minPos][5].toUpperCase()) < arroza[minPos][5].toUpperCase().compareTo(arroza[t][5].toUpperCase())) {
-                            minPos = t;
-                        }
-                    }
-                    String[] temp = arroza[minPos];
-                    arroza[minPos] = arroza[i];
-                    arroza[i] = temp;
-                }
-            }            
-            for (int i = 0; i < displayedData.size(); i++) {
-                displayedData.set(i, arroza[i]);
-            }
-
-    }
     /**
      * @return the firstLineToDisplay
      */
@@ -1054,6 +971,31 @@ public class StatsData implements Searchable, Sortable, Displayable {
     public void setDisplayedData(ArrayList<String[]> displayedData) {
         this.displayedData = displayedData;
     }
+	@Override
+	public void sort(int sortField, int sortType) {
+		
+		if (sortFire == sortField) {
+			sortFire=-1;
+			displayedData = Sort.getSorted(sortField, sortFire, displayedData);	
+			}
+		else {
+			displayedData = Sort.getSorted(sortField, sortType, displayedData);
+			sortFire = sortField;
+			}
+	}
+	/**
+	 * @return the sortType
+	 */
+	public int getSortType() {
+		return sortType;
+	}
+	/**
+	 * @param sortType the sortType to set
+	 */
+	public void setSortType(int sortType) {
+		this.sortType = sortType;
+	}
+
         
 }
 

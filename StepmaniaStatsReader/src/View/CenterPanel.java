@@ -31,22 +31,22 @@ public class CenterPanel extends JPanel
     }
     public void addButtons(int fRow,int totLines, ArrayList<String[]> songs) {
         int cl = 0;
-        System.out.println(songs.size());
-        System.out.println("totRows: " + totLines);
-        System.out.println("fRow: " + fRow);
+       // System.out.println(songs.size());
+        //System.out.println("totRows: " + totLines);
+        //System.out.println("fRow: " + fRow);
         for (int i = fRow; i < fRow+totLines ; i++) { 
             for (int o = 0; o < songs.get(i).length; o++) {
                 getBs().get(cl).setText(songs.get(i)[o]);
-                System.out.print(songs.get(i)[o] + ", ");   
+                //System.out.print(songs.get(i)[o] + ", ");   
                 add(getBs().get(cl));
                 cl++;
             }
-            System.out.println();
+            //System.out.println();
         }
     }
     public void setupLayout(int rows, int cols) {
         setLayout(new GridLayout(rows, cols));
-        System.out.println(rows+ " "+ cols);
+        //System.out.println(rows+ " "+ cols);
     }
     /**
      * @return the headers
