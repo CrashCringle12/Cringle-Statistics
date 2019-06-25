@@ -3,7 +3,7 @@ import Controller.Controller;
 import Model.Model;
 import View.View;
 
-class App
+class CringleStats
 {
 
     public static void main(String[] args)
