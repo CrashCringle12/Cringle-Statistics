@@ -36,16 +36,18 @@ public class StatsData implements Searchable, Sortable, Displayable {
     int sortFire = -1;
     
     
-    private Map<String, String[]> searchByName = new HashMap<>();
-    private Map<String, String[]> searchSongName = new HashMap<>();
-    private Map<String, String[]> searchTier = new HashMap<>();
-    private Map<String, String[]> searchPercent = new HashMap<>();
-    private Map<Integer, Song> searchTimesPlayed = new HashMap<>();
-    private Map<String, Song> searchLastPlayed= new HashMap<>();
-    private Map<String, Song> searchDifficulty = new HashMap<>();
-    private Map<String, Song> searchModifiers = new HashMap<>();
-    private Map<String, Song> searchType = new HashMap<>();
-    private Map<String, ArrayList<Song>> searchPack= new HashMap<>();
+     Map<String, String[]> searchName = new HashMap<>();
+     Map<String, String[]> searchSong = new HashMap<>();
+     Map<String, String[]> searchGrade = new HashMap<>();
+     Map<String, String[]> searchPercent = new HashMap<>();
+     Map<Integer, String[]> searchTimesPlayed = new HashMap<>();
+     Map<String, String[]> searchLastPlayed= new HashMap<>();
+     Map<String, String[]> searchLevel = new HashMap<>();
+     Map<String, String[]> searchModifiers = new HashMap<>();
+     Map<String, String[]> searchType = new HashMap<>();
+     Map<String, String[]> searchPack= new HashMap<>();
+     Map<String, String[]> searchDate= new HashMap<>();
+     Map<String, String[]> searchScore= new HashMap<>();
     
     ArrayList<Integer> arroz = new ArrayList<>();
     ArrayList<Integer> arroze = new ArrayList<>();
@@ -239,9 +241,6 @@ public class StatsData implements Searchable, Sortable, Displayable {
 
             }
             difficulties.clear();
-            if (getPackName() == null ? getPrevPackName() != null : !getPackName().equals(getPrevPackName())) {
-                getSearchPack().put(getPackName(), getAllSongs());
-            }
             setPrevPackName(getPackName());       
         }   
             
@@ -268,9 +267,17 @@ public class StatsData implements Searchable, Sortable, Displayable {
 							e.printStackTrace();
 						}
 						String datetime = formate.format(date1);
-
+						
                         String[] obj = {pack, song, steptype, level, name, grade, percent + "%", points + "", datetime};
-                        getSearchByName().put(name, obj);
+                        searchPack.put(pack, obj);
+                        searchName.put(name, obj);
+                        searchSong.put(song, obj);
+                        searchType.put(steptype, obj);
+                        searchLevel.put(level, obj);
+                        searchGrade.put(grade, obj);
+                        searchPercent.put(percent + "%", obj);
+                        searchScore.put(points + "", obj);
+                        searchDate.put(datetime, obj);
                         displayedData.add(obj);
             	}
             }
@@ -342,9 +349,7 @@ public class StatsData implements Searchable, Sortable, Displayable {
 				break;
     		case "Failed":
 				dynamite = "Failure";
-				break;
-
-    			
+				break;	
     	}
 		return dynamite;
     }
@@ -362,145 +367,6 @@ public class StatsData implements Searchable, Sortable, Displayable {
         return headers;
     }
     
-    /**
-     * @return the searchByName
-     */
-    public Map<String, String[]> getSearchByName() {
-        return searchByName;
-    }
-
-    /**
-     * @param searchByName the searchByName to set
-     */
-    public void setSearchByName(Map<String, String[]> searchByName) {
-        this.searchByName = searchByName;
-    }
-
-    /**
-     * @return the searchSongName
-     */
-    public Map<String, String[]> getSearchSongName() {
-        return searchSongName;
-    }
-
-    /**
-     * @param searchSongName the searchSongName to set
-     */
-    public void setSearchSongName(Map<String, String[]> searchSongName) {
-        this.searchSongName = searchSongName;
-    }
-
-    /**
-     * @return the searchTier
-     */
-    public Map<String, String[]> getSearchTier() {
-        return searchTier;
-    }
-
-    /**
-     * @param searchTier the searchTier to set
-     */
-    public void setSearchTier(Map<String, String[]> searchTier) {
-        this.searchTier = searchTier;
-    }
-
-    /**
-     * @return the searchPercent
-     */
-    public Map<String, String[]> getSearchPercent() {
-        return searchPercent;
-    }
-
-    /**
-     * @param searchPercent the searchPercent to set
-     */
-    public void setSearchPercent(Map<String, String[]> searchPercent) {
-        this.searchPercent = searchPercent;
-    }
-
-    /**
-     * @return the searchTimesPlayed
-     */
-    public Map<Integer, Song> getSearchTimesPlayed() {
-        return searchTimesPlayed;
-    }
-
-    /**
-     * @param searchTimesPlayed the searchTimesPlayed to set
-     */
-    public void setSearchTimesPlayed(Map<Integer, Song> searchTimesPlayed) {
-        this.searchTimesPlayed = searchTimesPlayed;
-    }
-
-    /**
-     * @return the searchLastPlayed
-     */
-    public Map<String, Song> getSearchLastPlayed() {
-        return searchLastPlayed;
-    }
-
-    /**
-     * @param searchLastPlayed the searchLastPlayed to set
-     */
-    public void setSearchLastPlayed(Map<String, Song> searchLastPlayed) {
-        this.searchLastPlayed = searchLastPlayed;
-    }
-
-    /**
-     * @return the searchDifficulty
-     */
-    public Map<String, Song> getSearchDifficulty() {
-        return searchDifficulty;
-    }
-
-    /**
-     * @param searchDifficulty the searchDifficulty to set
-     */
-    public void setSearchDifficulty(Map<String, Song> searchDifficulty) {
-        this.searchDifficulty = searchDifficulty;
-    }
-
-    /**
-     * @return the searchModifiers
-     */
-    public Map<String, Song> getSearchModifiers() {
-        return searchModifiers;
-    }
-
-    /**
-     * @param searchModifiers the searchModifiers to set
-     */
-    public void setSearchModifiers(Map<String, Song> searchModifiers) {
-        this.searchModifiers = searchModifiers;
-    }
-
-    /**
-     * @return the searchType
-     */
-    public Map<String, Song> getSearchType() {
-        return searchType;
-    }
-
-    /**
-     * @param searchType the searchType to set
-     */
-    public void setSearchType(Map<String, Song> searchType) {
-        this.searchType = searchType;
-    }
-
-    /**
-     * @return the searchPack
-     */
-    public Map<String, ArrayList<Song>> getSearchPack() {
-        return searchPack;
-    }
-
-    /**
-     * @param searchPack the searchPack to set
-     */
-    public void setSearchPack(Map<String, ArrayList<Song>> searchPack) {
-        this.searchPack = searchPack;
-    }
 
     /**
      * @return the arroz
@@ -854,16 +720,28 @@ public class StatsData implements Searchable, Sortable, Displayable {
 
     @Override
     public boolean search(String searchTerm) {
+    	ArrayList<Map<String, String[]>> searches = new ArrayList<>();
+    	searches.add(searchPack);
+    	searches.add(searchSong);
+    	searches.add(searchType);
+    	searches.add(searchLevel);
+    	searches.add(searchName);
+    	searches.add(searchGrade);
+    	searches.add(searchPercent);
+    	searches.add(searchScore);
+    	searches.add(searchDate);
         int counter = 0;
-        
-        if(sortField == 4) {
-            
-            found = searchByName.containsKey(searchTerm);
-            for (int i = 0; i < displayedData.size(); i++) {
-                if (displayedData.get(i)[4] == searchByName.get(searchTerm)[4]) {
+        for (int w = 0; w < 9; w++) {
+            if(searchByField == w) {
+                found = searches.get(w).containsKey(searchTerm);
+                if (found) {
+                for (String[] i : displayedData) {
+                	
                     counter++;
-                    foundIndex=counter;
-                    
+                    if (i[w] == searches.get(w).get(searchTerm)[w]) {
+                        foundIndex = counter;
+                    }
+                }
                 }
             }
         }

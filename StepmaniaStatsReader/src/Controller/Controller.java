@@ -93,7 +93,7 @@ public class Controller {
                         }
                     }
                     model.getStData().setSortField(o);
-                    //model.getStData().setSearchByField(o);
+                    model.getStData().setSearchByField(o);
                     
                     model.getStData().sort(model.getStData().getSortField(), model.getStData().getSortType());
                     displayData();
