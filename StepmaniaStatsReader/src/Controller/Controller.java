@@ -1,13 +1,10 @@
 package Controller;
 
-import java.io.File;
-
 import Model.Model; 
 import View.View;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.awt.event.*;
 import javax.swing.*;
 
