@@ -16,10 +16,13 @@ import javax.swing.*;
  */
 public class NorthPanel extends JPanel {
     private JTextField tf1;
+    JLabel tl1;
     public NorthPanel() {
+    	tl1 = new JLabel("Click on a Field to Search");
         tf1 = new JTextField(30);
         tf1.setOpaque(true);
         tf1.setBackground(Color.white);
+        add(tl1);
         add(tf1);
         
     }

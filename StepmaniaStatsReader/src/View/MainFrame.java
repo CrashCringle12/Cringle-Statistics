@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
         private JLabel lblHeading;
         private InitialPanel ip;
     public MainFrame() {
-        super("Cringle Statistics Alpha");
+        super("Cringle Statistics Beta - Crash Cringle");
         setupLayoutForMacs();
         ip = new InitialPanel();
         add(ip, "Center");
