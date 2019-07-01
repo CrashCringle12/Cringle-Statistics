@@ -39,7 +39,7 @@ public class StatsData implements Searchable, Sortable, Displayable {
      Map<String, String[]> searchSong = new HashMap<>();
      Map<String, String[]> searchGrade = new HashMap<>();
      Map<String, String[]> searchPercent = new HashMap<>();
-     Map<Integer, String[]> searchTimesPlayed = new HashMap<>();
+     Map<String, Integer> searchTimesPlayed = new HashMap<>();
      Map<String, String[]> searchLastPlayed= new HashMap<>();
      Map<String, String[]> searchLevel = new HashMap<>();
      Map<String, String[]> searchModifiers = new HashMap<>();
@@ -93,6 +93,7 @@ public class StatsData implements Searchable, Sortable, Displayable {
    }
     public final void ReadStatisticsFromXML() {
         try {
+            int totTimes = 0;
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document cStats = dBuilder.parse(getStats());
@@ -148,7 +149,13 @@ public class StatsData implements Searchable, Sortable, Displayable {
                                 Node node2 = hs.item(t);               
                                 if (node2.getNodeType() == Node.ELEMENT_NODE) {
                                     Element hsElement = (Element) node2;
-                                    
+                                    NodeList hsInfo = hsElement.getElementsByTagName("NumTimesPlayed");
+                                    for (int a = 0; a < hsInfo.getLength(); a++) {
+                                        Element node9 = (Element) hsInfo.item(a);
+                                        if (node9.getNodeType() == Node.ELEMENT_NODE) {
+                                            numTimes = Integer.parseInt(node9.getTextContent());
+                                        }
+                                    }                   
     //********************************************************************************************************************************                              
                                     NodeList highScoreList = hsElement.getElementsByTagName("HighScore");
                                     for (int w = 0; w < highScoreList.getLength(); w++) {
@@ -223,9 +230,11 @@ public class StatsData implements Searchable, Sortable, Displayable {
                                 }
                                     
                             }
-                            Difficulty stepDifficulty = new Difficulty(songName, level, steptype, (ArrayList) highscores.clone());
+                            Difficulty stepDifficulty = new Difficulty(songName, numTimes, level, steptype, (ArrayList) highscores.clone());
+                            totTimes += numTimes;
                             difficulties.add(stepDifficulty);                           
                             highscores.clear();
+                            
                         }
 
                     }
@@ -234,12 +243,15 @@ public class StatsData implements Searchable, Sortable, Displayable {
                   
             }
             
-            setSong(new Song(getPackName(), getSongName(), (ArrayList) difficulties.clone())); 
+            setSong(new Song(getPackName(), getSongName(), (ArrayList) difficulties.clone(), totTimes));
+            searchTimesPlayed.put(getSong().getTitle(), getSong().getTimesPlayed());
+            totTimes = 0;
             if (!"null".equals(getSong().getTitle())) {
                 getAllSongs().add(getSong());
-
+                
             }
             difficulties.clear();
+            System.out.println(getSong().getTitle() + getSong().getTimesPlayed());
             setPrevPackName(getPackName());       
         }   
             
@@ -716,7 +728,10 @@ public class StatsData implements Searchable, Sortable, Displayable {
     public void setSearchByField(int searchByField) {
         this.searchByField = searchByField;
     }
-
+    public int getAdditionalInfo(String nameOfSong) {
+        
+        return searchTimesPlayed.get(nameOfSong);
+    }
     @Override
     public boolean search(String searchTerm) {
     	ArrayList<Map<String, String[]>> searches = new ArrayList<>();

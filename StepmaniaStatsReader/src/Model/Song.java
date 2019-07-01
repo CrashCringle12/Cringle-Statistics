@@ -15,10 +15,12 @@ public class Song {
     private String pack;
     private String title;
     private ArrayList<Difficulty> difficulties;
-    public Song(String pck, String sng, ArrayList<Difficulty> difs) {
+    private int timesPlayed;
+    public Song(String pck, String sng, ArrayList<Difficulty> difs, int totTimes) {
         pack = pck;
         title = sng;
         difficulties = difs;
+        timesPlayed = totTimes;
     }
 
     
@@ -73,6 +75,20 @@ public class Song {
      */
     public void setDifficulties(ArrayList<Difficulty> difficulties) {
         this.difficulties = difficulties;
+    }
+
+    /**
+     * @return the timesPlayed
+     */
+    public int getTimesPlayed() {
+        return timesPlayed;
+    }
+
+    /**
+     * @param timesPlayed the timesPlayed to set
+     */
+    public void setTimesPlayed(int timesPlayed) {
+        this.timesPlayed = timesPlayed;
     }
 
     

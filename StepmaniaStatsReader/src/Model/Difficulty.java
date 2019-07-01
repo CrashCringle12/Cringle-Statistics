@@ -14,8 +14,10 @@ public class Difficulty {
     private String level;
     private ArrayList<HighScore> pScores;
     private String title;
-    public Difficulty(String tit, String lvl, String sttype, ArrayList<HighScore> a) {
+    private int timesPlayed;
+    public Difficulty(String tit, int tmPld, String lvl, String sttype, ArrayList<HighScore> a) {
         level = lvl;
+        timesPlayed = tmPld;
         steptype = sttype;
         pScores = a;
         title = tit;
@@ -83,6 +85,20 @@ public class Difficulty {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * @return the timesPlayed
+     */
+    public int getTimesPlayed() {
+        return timesPlayed;
+    }
+
+    /**
+     * @param timesPlayed the timesPlayed to set
+     */
+    public void setTimesPlayed(int timesPlayed) {
+        this.timesPlayed = timesPlayed;
     }
     
 
