@@ -4,9 +4,7 @@
  * and open the template in the editor.
  */
 package View;
-import java.awt.event.*;
 import java.awt.*;
-import java.util.ArrayList;
 import javax.swing.*;
 
 

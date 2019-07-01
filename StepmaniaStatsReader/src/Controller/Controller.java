@@ -1,13 +1,10 @@
 package Controller;
 
-import java.io.File;
-
 import Model.Model; 
 import View.View;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -73,6 +70,27 @@ public class Controller {
         
     }
     public void addClicking() {
+            for (int i = 1; i < view.getMf().getIp().cp.getBs().size(); i += 9) {
+                view.getMf().getIp().cp.getBs().get(i).addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        
+                        JButton v = (JButton) event.getSource();
+                        int o = view.getMf().getIp().cp.getBs().indexOf(v);
+                        for (int f = 0; f < view.getMf().getIp().cp.getBs().size(); f++) {
+                            if (f != o) {
+                                view.getMf().getIp().cp.getBs().get(f).setBackground(null);
+                            } else {
+                                view.getMf().getIp().cp.getBs().get(f).setBackground(Color.pink);
+                                String songName = view.getMf().getIp().cp.getBs().get(f).getText();
+                                view.getMf().getIp().wp.setA(model.getStData().getAdditionalInfo(songName) + "");
+                                
+                            }
+                        }
+                    }
+                });
+            }
             for (JButton i : view.getMf().getIp().cp.getHeaders()) {
 
             i.addActionListener(
